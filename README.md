@@ -56,12 +56,12 @@ support) needs HTTPS.
 
 ## Deploy (GitHub Pages, same as Nett)
 
-```bash
-gh repo create merrickjo/nada-pwa --private --source=. --push
-```
+Live at `https://merrickjo.github.io/nada-pwa/`, served by Pages from `main` / root.
+The repo is public because the GitHub free plan has no Pages on private repos.
+That's fine here: there are no keys or personal data, only code and chord
+progressions.
 
-Turn on Pages from `main` / root. The app URL will be
-`https://merrickjo.github.io/nada-pwa/`. Open it in Safari on the iPad, then
+Every push to `main` redeploys. Open the URL in Safari on the iPad, then
 Share → Add to Home Screen.
 
 Bump `VERSION` in `sw.js` for every shell change.
