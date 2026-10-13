@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Nada — 15 minutes a day at the piano: chord shapes in C, a guided practice loop and a worship songbook.">
+<meta name="theme-color" content="#F4F5F7">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Nada">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Nada</title>
+<!-- carpe-kit v2.0.0: shared type, spacing, shape and the floating bar. -->
+<link rel="stylesheet" href="./carpe-kit.css">
+<link rel="stylesheet" href="./styles.css">
+<script src="./carpe-kit.js" defer></script>
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<header class="top">
+  <span class="ck-label brand">Nada</span>
+  <span class="ck-label" id="today-strip">0 / 15 min today</span>
+</header>
+
+<!-- The stage: keyboard + transport, the same on every view -->
+<section class="stage" aria-label="Keyboard and player">
+  <div class="stage-head">
+    <div>
+      <p class="ck-label" id="seq-label">Level 1</p>
+      <h1 class="ck-section" id="seq-title">The 1‑5‑6‑4 loop in C</h1>
+    </div>
+    <ol class="chips" id="chips" aria-label="Chords in this loop"></ol>
+  </div>
+
+  <div class="kb-wrap"><div class="kb" id="kb" role="img" aria-label="Piano keys to press"></div></div>
+  <div class="legend">
+    <span><i class="sw rh"></i>Right hand</span>
+    <span><i class="sw lh"></i>Left hand</span>
+    <span class="meta">Numbers are fingers: 1 thumb … 5 pinky</span>
+    <span class="meta" id="voicing-note"></span>
+  </div>
+
+  <div class="transport">
+    <div class="seg" id="hands" role="group" aria-label="Hands">
+      <button data-m="rh">Right</button><button data-m="lh">Left</button><button data-m="both">Both</button>
+    </div>
+    <div class="stepper" aria-label="Tempo">
+      <button id="bpm-down" aria-label="Slower">−</button>
+      <span class="ck-num" id="bpm">60</span><span class="ck-label">BPM</span>
+      <button id="bpm-up" aria-label="Faster">+</button>
+    </div>
+    <label class="field">Each chord
+      <select id="per-chord"></select>
+    </label>
+    <label class="check" id="b3-wrap"><input type="checkbox" id="b3"> Bass on 3</label>
+    <div class="beats" id="beats" aria-hidden="true"></div>
+    <button class="btn primary play" id="play">Play loop</button>
+  </div>
+</section>
+
+<main class="gn-clear">
+  <!-- PRACTICE -->
+  <section class="view" id="view-practice">
+    <div class="cols">
+      <div class="card session">
+        <p class="ck-label" id="lvl-name">Level 1</p>
+        <h2 class="ck-section" id="lvl-title"></h2>
+        <p class="clock ck-num" id="clock">15:00</p>
+        <div class="actions">
+          <button class="btn primary" id="sess">Start 15 min</button>
+          <button class="btn" id="sess-reset">Reset</button>
+          <button class="btn" id="load-l1">Load the loop</button>
+        </div>
+        <p class="goal"><span class="ck-label">Done when</span><span id="lvl-goal"></span></p>
+      </div>
+      <ol class="stages" id="stages"></ol>
+    </div>
+  </section>
+
+  <!-- SONGS -->
+  <section class="view" id="view-songs" hidden>
+    <div class="cols songs">
+      <ul class="song-list" id="song-list"></ul>
+      <article class="song" id="song"></article>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section class="view" id="view-log" hidden>
+    <div class="cols">
+      <div class="card">
+        <p class="ck-label">Today</p>
+        <p class="clock ck-num" id="log-today">0 min</p>
+        <p class="meta" id="log-streak"></p>
+        <p class="meta" id="log-total"></p>
+      </div>
+      <div class="card">
+        <p class="ck-label">Last 14 days · line at 15 min</p>
+        <div class="days" id="log-days"></div>
+        <p class="meta">Time counts while the loop plays or a 15‑minute session runs.</p>
+      </div>
+    </div>
+    <p class="meta" id="version"></p>
+  </section>
+</main>
+
+<div class="gn-scrim"></div>
+<nav class="gn" aria-label="Primary">
+  <button class="gn-item" data-gn="practice" aria-current="page">Practice</button>
+  <button class="gn-item" data-gn="songs">Songs</button>
+  <button class="gn-item" data-gn="log">Log</button>
+</nav>
+
+<!-- Chord editor sheet -->
+<div class="sheet-backdrop" id="sheet" hidden>
+  <form class="sheet" id="sheet-form">
+    <p class="ck-label">Edit chords</p>
+    <h2 class="ck-section" id="sheet-title"></h2>
+    <p class="meta">One section per line, chords in the song's original key (<b id="sheet-key"></b>). Add <span class="ck-num">x2</span> for repeats.</p>
+    <textarea id="sheet-text" rows="10" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="Verse: C F Am G x2&#10;Chorus: F C G Am"></textarea>
+    <ul class="errors" id="sheet-errors"></ul>
+    <div class="actions">
+      <button class="btn" type="button" id="sheet-cancel">Cancel</button>
+      <button class="btn" type="button" id="sheet-reset">Back to chart</button>
+      <button class="btn primary" type="submit">Save</button>
+    </div>
+  </form>
+</div>
+</body>
+</html>
